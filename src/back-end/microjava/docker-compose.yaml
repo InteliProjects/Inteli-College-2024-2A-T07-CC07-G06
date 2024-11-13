@@ -1,0 +1,65 @@
+version: '3.8'
+services:
+  products-service:
+    image: gabcolsil/micro-products
+    ports:
+      - "8081:8080"
+    networks:
+      - microservices-network
+    environment:
+      - DATABASE_CLIENT=nsync
+      - DATABASE_HOST=nsync.cc8yvbavdrhb.us-east-1.rds.amazonaws.com
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=nsyncdb
+      - DATABASE_USERNAME=nsync
+      - DATABASE_PASSWORD=grupo.nsync
+      - DATABASE_SSL=true
+
+  cep-estimator:
+    image: gabcolsil/micro-cep-service
+    ports:
+      - "8082:8080"
+    networks:
+      - microservices-network
+    environment:
+      - DATABASE_CLIENT=nsync
+      - DATABASE_HOST=nsync.cc8yvbavdrhb.us-east-1.rds.amazonaws.com
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=nsyncdb
+      - DATABASE_USERNAME=nsync
+      - DATABASE_PASSWORD=grupo.nsync
+      - DATABASE_SSL=true
+
+  purchase-service:
+    image: gabcolsil/micro-purchase
+    ports:
+      - "8083:8080"
+    networks:
+      - microservices-network
+    environment:
+      - DATABASE_CLIENT=nsync
+      - DATABASE_HOST=nsync.cc8yvbavdrhb.us-east-1.rds.amazonaws.com
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=nsyncdb
+      - DATABASE_USERNAME=nsync
+      - DATABASE_PASSWORD=grupo.nsync
+      - DATABASE_SSL=true
+
+  upload-csv-service:
+    image: gabcolsil/micro-upload-csv
+    ports:
+      - "8084:8080"
+    networks:
+      - microservices-network
+    environment:
+      - DATABASE_CLIENT=nsync
+      - DATABASE_HOST=nsync.cc8yvbavdrhb.us-east-1.rds.amazonaws.com
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=nsyncdb
+      - DATABASE_USERNAME=nsync
+      - DATABASE_PASSWORD=grupo.nsync
+      - DATABASE_SSL=true
+
+networks:
+  microservices-network:
+    driver: bridge

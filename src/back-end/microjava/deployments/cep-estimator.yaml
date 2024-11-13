@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cep-estimator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cep-estimator
+  template:
+    metadata:
+      labels:
+        app: cep-estimator
+    spec:
+      containers:
+        - name: cep-estimator
+          image: gabcolsil/micro-cep-service
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_CLIENT
+              value: "nsync"
+            - name: DATABASE_HOST
+              value: "nsync.cfcsbdnasvfb.us-east-1.rds.amazonaws.com"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_NAME
+              value: "nsyncdb"
+            - name: DATABASE_USERNAME
+              value: "nsync"
+            - name: DATABASE_PASSWORD
+              value: "grupo.nsync"
+            - name: DATABASE_SSL
+              value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cep-estimator
+spec:
+  selector:
+    app: cep-estimator
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8080m

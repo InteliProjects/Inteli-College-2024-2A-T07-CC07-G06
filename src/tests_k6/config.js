@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://44.214.100.77:8080'; // URL base do backend

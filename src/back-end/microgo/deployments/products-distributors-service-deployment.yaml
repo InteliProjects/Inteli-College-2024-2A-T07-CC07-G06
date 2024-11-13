@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-distributors-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-distributors-service
+  template:
+    metadata:
+      labels:
+        app: products-distributors-service
+    spec:
+      containers:
+        - name: products-distributors-service
+          image: maurodaschagasjunior/products-distributors
+          ports:
+            - containerPort: 8093
+          env:
+            - name: DB_CONN_STRING
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DB_CONN_STRING
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_ORIGINS
+            - name: CORS_METHODS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_METHODS
+            - name: CORS_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_HEADERS
+            - name: CORS_EXPOSE_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_EXPOSE_HEADERS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-distributors-service
+spec:
+  selector:
+    app: products-distributors-service
+  ports:
+    - protocol: TCP
+      port: 8093
+      targetPort: 8093

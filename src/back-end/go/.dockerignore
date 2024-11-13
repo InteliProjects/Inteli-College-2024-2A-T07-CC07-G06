@@ -1,0 +1,8 @@
+*.yaml
+*.sum
+*.md
+*.bashrc
+.dockerignore
+.gitignore
+.git
+.env

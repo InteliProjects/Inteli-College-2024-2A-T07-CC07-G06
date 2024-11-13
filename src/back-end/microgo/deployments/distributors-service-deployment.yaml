@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: distributors-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: distributors-service
+  template:
+    metadata:
+      labels:
+        app: distributors-service
+    spec:
+      containers:
+        - name: distributors-service
+          image: maurodaschagasjunior/distributors
+          ports:
+            - containerPort: 8092
+          env:
+            - name: DB_CONN_STRING
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DB_CONN_STRING
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_ORIGINS
+            - name: CORS_METHODS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_METHODS
+            - name: CORS_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_HEADERS
+            - name: CORS_EXPOSE_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_EXPOSE_HEADERS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: distributors-service
+spec:
+  selector:
+    app: distributors-service
+  ports:
+    - protocol: TCP
+      port: 8092
+      targetPort: 8092

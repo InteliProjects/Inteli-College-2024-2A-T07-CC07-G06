@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purchase-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: purchase-service
+  template:
+    metadata:
+      labels:
+        app: purchase-service
+    spec:
+      containers:
+        - name: purchase-service
+          image: maurodaschagasjunior/purchase
+          ports:
+            - containerPort: 8097
+          env:
+            - name: DB_CONN_STRING
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DB_CONN_STRING
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_ORIGINS
+            - name: CORS_METHODS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_METHODS
+            - name: CORS_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_HEADERS
+            - name: CORS_EXPOSE_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_EXPOSE_HEADERS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: purchase-service
+spec:
+  selector:
+    app: purchase-service
+  ports:
+    - protocol: TCP
+      port: 8097
+      targetPort: 8097

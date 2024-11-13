@@ -1,0 +1,82 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - products-service
+      - distributors-service
+      - products-distributors-service
+      - delivery-service
+    networks:
+      - my-network
+
+  products-service:
+    build: ./microservices/products
+    env_file: .env
+    ports:
+      - "8091:8091"
+    networks:
+      - my-network
+
+  distributors-service:
+    build: ./microservices/distributors
+    env_file: .env
+    ports:
+      - "8092:8092"
+    networks:
+      - my-network
+
+  products-distributors-service:
+    build: ./microservices/products-distributors
+    env_file: .env
+    ports:
+      - "8093:8093"
+    networks:
+      - my-network
+
+  delivery-service:
+    build: ./microservices/delivery
+    env_file: .env
+    ports:
+      - "8094:8094"
+    networks:
+      - my-network
+
+  sales-orders-service:
+    build: ./microservices/sales-orders
+    env_file: .env
+    ports:
+      - "8095:8095"
+    networks:
+      - my-network
+
+  sales-orders-products-service:
+    build: ./microservices/sales-orders-products
+    env_file: .env
+    ports:
+      - "8096:8096"
+    networks:
+      - my-network
+
+  purchase-service:
+    build: ./microservices/purchase
+    env_file: .env
+    ports:
+      - "8097:8097"
+    networks:
+      - my-network
+
+  csv-processor-service:
+    build: ./microservices/csv-processor
+    env_file: .env
+    ports:
+      - "8098:8098"
+    networks:
+      - my-network
+      
+networks:
+  my-network:
+    driver: bridge

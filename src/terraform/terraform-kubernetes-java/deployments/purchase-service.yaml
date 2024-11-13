@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: purchase-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: purchase-service
+  template:
+    metadata:
+      labels:
+        app: purchase-service
+    spec:
+      containers:
+        - name: purchase-service
+          image: gabcolsil/micro-purchase
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_CLIENT
+              value: "nsync"
+            - name: DATABASE_HOST
+              value: "nsync.cc8yvbavdrhb.us-east-1.rds.amazonaws.com"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DATABASE_NAME
+              value: "nsyncdb"
+            - name: DATABASE_USERNAME
+              value: "nsync"
+            - name: DATABASE_PASSWORD
+              value: "grupo.nsync"
+            - name: DATABASE_SSL
+              value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: purchase-service
+spec:
+  selector:
+    app: purchase-service
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8080

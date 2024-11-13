@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sales-orders-products-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sales-orders-products-service
+  template:
+    metadata:
+      labels:
+        app: sales-orders-products-service
+    spec:
+      containers:
+        - name: sales-orders-products-service
+          image: maurodaschagasjunior/sales-orders-products
+          ports:
+            - containerPort: 8096
+          env:
+            - name: DB_CONN_STRING
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DB_CONN_STRING
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_ORIGINS
+            - name: CORS_METHODS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_METHODS
+            - name: CORS_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_HEADERS
+            - name: CORS_EXPOSE_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_EXPOSE_HEADERS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sales-orders-products-service
+spec:
+  selector:
+    app: sales-orders-products-service
+  ports:
+    - protocol: TCP
+      port: 8096
+      targetPort: 8096
+

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csv-processor-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csv-processor-service
+  template:
+    metadata:
+      labels:
+        app: csv-processor-service
+    spec:
+      containers:
+        - name: csv-processor-service
+          image: maurodaschagasjunior/csv-processor
+          ports:
+            - containerPort: 8098
+          env:
+            - name: DB_CONN_STRING
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DB_CONN_STRING
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_ORIGINS
+            - name: CORS_METHODS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_METHODS
+            - name: CORS_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_HEADERS
+            - name: CORS_EXPOSE_HEADERS
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: CORS_EXPOSE_HEADERS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csv-processor-service
+spec:
+  selector:
+    app: csv-processor-service
+  ports:
+    - protocol: TCP
+      port: 8098
+      targetPort: 8098

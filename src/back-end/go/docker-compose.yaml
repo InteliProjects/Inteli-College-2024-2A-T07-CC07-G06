@@ -1,0 +1,8 @@
+# docker-compose-local.yml
+services:
+  web-server:
+    build: Dockerfile
+    image: nsync-server
+    env_file: .env
+    ports:
+      - "8080:8080"
